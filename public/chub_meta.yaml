@@ -50,6 +50,7 @@ The stage supports multiple notes per input and also ignores brackets followed b
 This is an incredibly simple quality-of-life stage that I felt some folks might like to be able to drop into their chats. Let me know if you have any issues or suggestions. Thanks!
 <br>
 <br>
+2025.06.02 - Added some clearer logging and fixed a bug with using [[]] to clear long-term instructions.<br>
 2025.04.18 - Playing with allowing this to work in bot responses, but really with the intention of processing intros. It didn't really work because only the initial intro seems to go through the stage.<br>
 2025.04.05 - Added [[double brackets]] for long-term instruction.
 "
