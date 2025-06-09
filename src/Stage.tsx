@@ -16,6 +16,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     longTermInstruction: string = '';
     longTermLife: number = 0;
     imageInstructions: string[] = [];
+    backgroundImage: string = '';
+    backgroundUrl: string = '';
 
     // Unsaved:
     characters: {[key: string]: Character};
@@ -25,9 +27,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         super(data);
         const {
             characters,
-            users
+            users,
+            environment
         } = data;
 
+        console.log(environment);
         this.characters = characters;
         this.users = users;
 
@@ -50,19 +54,26 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async setState(state: MessageStateType): Promise<void> {
         this.readMessageState(state);
+        if (this.backgroundUrl != '') {
+            await this.messenger.updateEnvironment({background: this.backgroundUrl});
+        }
     }
 
     readMessageState(state: MessageStateType) {
         this.longTermInstruction = state?.longTermInstruction ?? '';
         this.longTermLife = state?.longTermLife ?? 0;
         this.imageInstructions = state?.imageInstructions ?? [];
+        this.backgroundImage = state?.backgroundImage ?? '';
+        this.backgroundUrl = state?.backgroundUrl ?? '';
     }
 
     writeMessageState() {
         return {
             longTermInstruction: this.longTermInstruction,
             longTermLife: this.longTermLife,
-            imageInstructions: this.imageInstructions
+            imageInstructions: this.imageInstructions,
+            backgroundImage: this.backgroundImage,
+            backgroundUrl: this.backgroundUrl
         }
     }
 
@@ -74,20 +85,32 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.imageInstructions = [];
 
         const longTermRegex = /\[\[([^\]]*)\]\](?!\()/gm;
-        const possibleLongTermInstruction = [...newContent.matchAll(longTermRegex)].map(match => match.slice(1)).join('\n').trim();
-        if (longTermRegex.test(newContent)) {
+        let possibleLongTermInstruction = [...newContent.matchAll(longTermRegex)].map(match => match.slice(1)[0]);
+
+        // Image flags:
+        possibleLongTermInstruction.forEach(instruction => {
+            if (instruction.startsWith("/imagine")) {
+                console.log(`Background /imagine detected: ${instruction.split("/imagine")[1].trim()}`);
+                this.backgroundImage = instruction.split("/imagine")[1].trim();
+                this.imageInstructions.push(this.backgroundImage);
+            }
+        });
+        possibleLongTermInstruction = possibleLongTermInstruction.filter(instruction => !instruction.startsWith("/imagine"));
+
+        const longTermInstruction = possibleLongTermInstruction.join('\n').trim();
+        if (possibleLongTermInstruction.length > 0) {
             if (this.longTermLife > 0) {
-                if (possibleLongTermInstruction.length > 0) {
-                console.log(`Replacing long-term instruction:\n${this.longTermInstruction}\nWith:\n${possibleLongTermInstruction}`);
+                if (longTermInstruction.length > 0) {
+                    console.log(`Replacing long-term instruction:\n${this.longTermInstruction}\nWith:\n${longTermInstruction}`);
                 } else {
                     console.log(`Clearing long-term instruction.`);
                 }
-            } else if (possibleLongTermInstruction.length > 0) {
-                console.log(`Setting long-term instruction:\n${possibleLongTermInstruction}`);
+            } else if (longTermInstruction.length > 0) {
+                console.log(`Setting long-term instruction:\n${longTermInstruction}`);
             } else {
                 console.log(`No current long-term instruction to clear.`);
             }
-            this.longTermInstruction = possibleLongTermInstruction;
+            this.longTermInstruction = longTermInstruction;
             this.longTermLife = possibleLongTermInstruction.length > 0 ? this.maxLife : 0;
             newContent = newContent.replace(longTermRegex, "").trim();
         }
@@ -172,6 +195,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 });
                 if (imageResponse?.url) {
                     imageUrls.push(`![${imageDescription.result}](${imageResponse.url})`); 
+                    if (instruction == this.backgroundImage) {
+                        this.backgroundUrl = imageResponse.url;
+                        await this.messenger.updateEnvironment({background: this.backgroundUrl});
+                    }
                 } else {
                     console.log('Failed to generate an image.');
                 }
