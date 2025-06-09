@@ -1,5 +1,5 @@
 import {ReactElement} from "react";
-import {StageBase, StageResponse, InitialData, Message, AspectRatio} from "@chub-ai/stages-ts";
+import {StageBase, StageResponse, InitialData, Message, AspectRatio, Character, User} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 
 type MessageStateType = any;
@@ -17,9 +17,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     longTermLife: number = 0;
     imageInstructions: string[] = [];
 
+    // Unsaved:
+    characters: {[key: string]: Character};
+    users: {[key: string]: User};
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
         super(data);
+        const {
+            characters,
+            users
+        } = data;
+
+        this.characters = characters;
+        this.users = users;
 
         const {config, messageState} = data;
         this.maxLife = config.maxLife ?? this.maxLife;
@@ -120,7 +130,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
 
-        const {content} = botMessage;
+        const {
+            anonymizedId,
+            promptForId,
+            content} = botMessage;
+
+        console.log(`anonymizedId: ${anonymizedId}, promptForId: ${promptForId}`);
         let newContent = content;
 
         const longTermRegex = /\[\[([^\]]+)\]\](?!\()/gm;
@@ -140,9 +155,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         for (let instruction of this.imageInstructions) {
             console.log(`Generate an image with additional instruction: ${instruction}`);
             const imageDescription = await this.generator.textGen({
-                prompt: `Information about {{char}}:\n{{description}}\n\n{{personality}}\n\nchar persona: {{char_persona}}\n\nsummary: {{summary}}\n\nInformation about {{user}}:\n{{persona}}\n\nNarrative History:\n{{messages}}\n\n${instruction.length > 0 ? `Essential Image Context to Convey:\n${instruction}\n\n` : ''}` +
+                prompt: `Information about {{char}}:\n${this.characters[promptForId ?? Object.keys(this.characters)[0]].description}\n\n` +
+                    `Information about {{user}}:\n${this.users[promptForId ?? Object.keys(this.users)[0]]}}}\n\n` +
+                    `Narrative History:\n{{messages}}\n\n${instruction.length > 0 ? `Essential Image Context to Convey:\n${instruction}\n\n` : ''}` +
                     `Current instruction:\nUse this response to synthesize a concise visual description of the current narrative moment (with essential context in mind). ` +
-                    `This will be used to generate an image, so use descriptive tags and keywords to convey details about pictured characters (gender, skin tone, hair style/color, physique, outfit), setting, and any actions being performed. A couple style words should be included, based on the character information rather than the narration.`,
+                    `This will be used to generate an image of the scene, so use descriptive tags and keywords to convey details about pictured characters (especially gender, skin tone, hair style/color, physique, outfit), setting, and any actions being performed. A couple style words should be included, based on the character information rather than the narration.`,
                 min_tokens: 50,
                 max_tokens: 100,
                 include_history: true
