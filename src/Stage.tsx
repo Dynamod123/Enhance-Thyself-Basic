@@ -16,7 +16,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     longTermInstruction: string = '';
     longTermLife: number = 0;
     imageInstructions: string[] = [];
-    backgroundImage: string = '';
+    backgroundImageInstruction: string = '';
     backgroundUrl: string = '';
 
     // Unsaved:
@@ -28,10 +28,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const {
             characters,
             users,
-            environment
+            initState,
         } = data;
 
-        console.log(environment);
         this.characters = characters;
         this.users = users;
 
@@ -54,16 +53,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async setState(state: MessageStateType): Promise<void> {
         this.readMessageState(state);
-        if (this.backgroundUrl != '') {
-            await this.messenger.updateEnvironment({background: this.backgroundUrl});
-        }
+        await this.messenger.updateEnvironment({background: this.backgroundUrl ?? ''});
     }
 
     readMessageState(state: MessageStateType) {
         this.longTermInstruction = state?.longTermInstruction ?? '';
         this.longTermLife = state?.longTermLife ?? 0;
         this.imageInstructions = state?.imageInstructions ?? [];
-        this.backgroundImage = state?.backgroundImage ?? '';
+        this.backgroundImageInstruction = state?.backgroundImageInstruction ?? '';
         this.backgroundUrl = state?.backgroundUrl ?? '';
     }
 
@@ -72,7 +69,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             longTermInstruction: this.longTermInstruction,
             longTermLife: this.longTermLife,
             imageInstructions: this.imageInstructions,
-            backgroundImage: this.backgroundImage,
+            backgroundImageInstruction: this.backgroundImageInstruction,
             backgroundUrl: this.backgroundUrl
         }
     }
@@ -91,8 +88,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         possibleLongTermInstruction.forEach(instruction => {
             if (instruction.startsWith("/imagine")) {
                 console.log(`Background /imagine detected: ${instruction.split("/imagine")[1].trim()}`);
-                this.backgroundImage = instruction.split("/imagine")[1].trim();
-                this.imageInstructions.push(this.backgroundImage);
+                this.backgroundImageInstruction = instruction.split("/imagine")[1].trim();
+                this.imageInstructions.push(this.backgroundImageInstruction);
             }
         });
         possibleLongTermInstruction = possibleLongTermInstruction.filter(instruction => !instruction.startsWith("/imagine"));
@@ -195,7 +192,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 });
                 if (imageResponse?.url) {
                     imageUrls.push(`![${imageDescription.result}](${imageResponse.url})`); 
-                    if (instruction == this.backgroundImage) {
+                    if (instruction == this.backgroundImageInstruction) {
                         this.backgroundUrl = imageResponse.url;
                         await this.messenger.updateEnvironment({background: this.backgroundUrl});
                     }
