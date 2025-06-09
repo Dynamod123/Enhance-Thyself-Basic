@@ -112,8 +112,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
             this.longTermInstruction = longTermInstruction;
             this.longTermLife = possibleLongTermInstruction.length > 0 ? this.maxLife : 0;
-            newContent = newContent.replace(longTermRegex, "").trim();
         }
+        newContent = newContent.replace(longTermRegex, "").trim();
 
         const currentRegex = /\[([^\]]*)\](?!\()/gm;
         let currentInstructions = [...newContent.matchAll(currentRegex)].map(match => match.slice(1)[0]);
