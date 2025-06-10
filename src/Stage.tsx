@@ -184,9 +184,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 prompt: `Information about {{char}}:\n${this.characters[promptForId ?? Object.keys(this.characters)[0]].description}\n\n` +
                     `Information about {{user}}:\n${this.users[promptForId ?? Object.keys(this.users)[0]]}}}\n\n` +
                     `Narrative History:\n{{messages}}\n\n${instruction.length > 0 ? `Essential Image Context to Convey:\n${instruction}\n\n` : ''}` +
-                    `Current instruction:\nUse this response to synthesize a precise visual description of ${instruction.length > 0 ? `the essential image context` : `of the current narrative moment`}. ` +
-                    `This response will be fed directly into an image generator, so convey as much detail about the setting, action, and scene composition, presenting ample character appearance notes (gender, skin tone, hair style/color, physique, outfit, etc.). ` +
-                    `Ideally, use descriptive tags and keywords to concisely convey details.`,
+                    `Current instruction:\nUse this response to synthesize a concise visual description of ${instruction.length > 0 ? `the essential image context` : `of the current narrative moment`}. ` +
+                    `This response will be fed directly into an image generator, so choose tags and keywords that convey great detail about the setting, action, and scene composition, ` +
+                    `presenting ample character appearance notes (gender, skin tone, hair style/color, physique, outfit, etc.).`,
                 min_tokens: 50,
                 max_tokens: 100,
                 include_history: true
@@ -249,7 +249,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     sanitizeMarkdownContent(content: string): string {
-        return content.replace(/[\]\(\)]/g, '');
+        return content.replace(/[\]\(\)\n]/g, '');
     }
 
     render(): ReactElement {
