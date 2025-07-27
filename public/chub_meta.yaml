@@ -9,15 +9,43 @@ tagline: "Take control with []s."
 
 creator_notes: "Want to tell the LLM how to do its job? This stage takes your [bracketed instructions] or [[double-bracketed instructions]] and turns them into \"stage directions,\" 
 which are high-priority instructions that are not directly attributed to the user's input. 
-Simply search for and add this stage to your chat from Chat Settings and you'll be able to leverage these features in your input:
-<ul>
-<li>[Single-bracketed instructions] will be treated as immediate instructions and will only apply to the following response (or its regens).  
-<li>[[Double-bracketed instructions]] will be treated as long-term instructions that apply for multiple responses (10, by default), or until new [[long-term instruction]] is provided. 
-<li>[/imagine Some instruction] will cause an image to be generated and inserted into the response. Unlike Chub's built-in /imagine, this command queries the LLM to build an image description from chat context--including any supplemental details you provide in the brackets.
-<li>[[/imagine Some instruction]] will do the same as above but also apply the resulting image as a chat background.
-</ul>
+Simply search for and add this stage to your chat from Chat Settings and you'll be able to leverage multiple features within your input:
+<details>
+<summary class=\"ant-ribbon\" style=\"cursor: pointer; font-weight: bold; padding: 6px; border-radius: 4px;\">
+[Immediate Instruction]
+</summary>
+<p style=\"margin: 10px 0 0;\">
+`[Single-Bracketed Immediate Instruction]` will apply the enclosed instruction to the following response (or its regens). 
+</p>
+</details>
+<details>
+<summary class=\"ant-ribbon\" style=\"cursor: pointer; font-weight: bold; padding: 6px; border-radius: 4px;\">
+[[Long-Term Instruction]]
+</summary>
+<p style=\"margin: 10px 0 0;\">
+`[[Double-Bracketed Immediate Instruction]]` will apply the enclosed instruction for multiple responses (10, by default) or until new `[[long-term instruction]]` is provided. 
+</p>
+</details>
+<details>
+<summary class=\"ant-ribbon\" style=\"cursor: pointer; font-weight: bold; padding: 6px; border-radius: 4px;\">
+[/Imagine Some Context]
+</summary>
+<p style=\"margin: 10px 0 0;\">
+`[/imagine Some additional context]` or `[/i Some additional context]` or simply `[/i]` will generate and insert an image into the response.<br>
+Unlike Chub's built-in /imagine, this command queries the LLM to build an image description from chat context--including any supplemental details you provide in the brackets.<br>
+`[[/imagine Some additional context]]` in double brackets will cause the resulting image to be used as a chat background, if backgrounds are not disabled at a profile-level.
+</p>
+</details>
+<details>
+<summary class=\"ant-ribbon\" style=\"cursor: pointer; font-weight: bold; padding: 6px; border-radius: 4px;\">
+[/Enhance Some Context]
+</summary>
+<p style=\"margin: 10px 0 0;\">
+`[/enhance Some action]` or `[/impersonate Some action]` or `[/e Some action]` will generate and insert impersonated prose into your input before the input is submitted to the LLM for a response.
+</p>
+</details>
 <br>
-There are multiple advantages to shifting OOC-style instructions into stage directions:
+There are multiple advantages to shifting these instructions into stage directions:
 <ul>
 <li>They are more likely to be honored by the LLM.
 <li>They  are less likely to be mimicked by the LLM.
@@ -26,33 +54,10 @@ There are multiple advantages to shifting OOC-style instructions into stage dire
 </ul>
 <br>
 <br>
-As an example, if you write:
+This is an incredibly simple quality-of-life stage that you can drop into any chat. Let me know if you have any issues or suggestions. Thanks!
 <br>
 <br>
-`I give {{char}} a friendly wave. [{{char}} ignores {{user}}'s wave.] [[{{char}} is always dismissive of {{user}}.]]`
-<br>
-<br>
-then your input will appear as:
-<br>
-<br>
-`I give {{char}} a friendly wave.`
-<br>
-<br>
-and the LLM will also receive:
-<br>
-<br>
-`### Ongoing Instruction: {{char}} is always dismissive of {{user}}.`
-<br>
-`### Critical Instruction: {{char}} should ignore {{user}}'s wave.`
-<br>
-<br>
-at the end of the prompt, which should help the LLM better adhere to this instruction. The \"Ongoing Instruction\" will last for multiple responses or until you replace it with further [[long-term instruction]]. 
-The stage supports multiple notes per input and also ignores brackets followed by parens, to avoid breaking markdown links.
-<br>
-<br>
-This is an incredibly simple quality-of-life stage that I felt some folks might like to be able to drop into their chats. Let me know if you have any issues or suggestions. Thanks!
-<br>
-<br>
+2025.07.27 - Adding a /enhance or /impersonate style command
 2025.07.26 - There have been some changes to the way that stages are applied to intros. 
 Overall, this is positive news, but the stage was deliberately removing Markdown image links from responses under the assumption that they would be hallucinatory—obviously, that's not true in an intro. 
 The stage now runs a HEAD request to validate image URLs found in responses, so that good links can be maintained while garbage gets removed.<br> 

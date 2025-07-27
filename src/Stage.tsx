@@ -1,5 +1,13 @@
 import {ReactElement} from "react";
-import {StageBase, StageResponse, InitialData, Message, AspectRatio, Character, User} from "@chub-ai/stages-ts";
+import {
+    StageBase,
+    StageResponse,
+    InitialData,
+    Message,
+    AspectRatio,
+    Character,
+    User
+} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 
 type MessageStateType = any;
@@ -47,9 +55,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.users = users;
 
         const {config, messageState} = data;
-        this.maxLife = config.maxLife ?? this.maxLife;
-        this.artStyle = config.artStyle ?? this.artStyle;
-        this.aspectRatio = Object.keys(this.ASPECT_RATIO_MAPPING).includes(config.aspectRatio) ? this.ASPECT_RATIO_MAPPING[config.aspectRatio] : this.aspectRatio;
+        this.maxLife = config?.maxLife ?? this.maxLife;
+        this.artStyle = config?.artStyle ?? this.artStyle;
+        this.aspectRatio = (config && Object.keys(this.ASPECT_RATIO_MAPPING).includes(config.aspectRatio)) ? this.ASPECT_RATIO_MAPPING[config.aspectRatio] : this.aspectRatio;
 
         this.readMessageState(messageState);
     }
@@ -89,24 +97,41 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
-        const {content} = userMessage;
+        const {
+            anonymizedId,
+            promptForId,
+            content} = userMessage;
         let newContent = content;
 
         this.longTermLife = Math.max(0, this.longTermLife - 1);
         this.imageInstructions = [];
 
         const longTermRegex = /\[\[([^\]]*)\]\](?!\()/gm;
+
         let possibleLongTermInstruction = [...newContent.matchAll(longTermRegex)].map(match => match.slice(1)[0]);
 
         // Image flags:
-        possibleLongTermInstruction.forEach(instruction => {
-            if (instruction.startsWith("/imagine")) {
-                console.log(`Background /imagine detected: ${instruction.split("/imagine")[1].trim()}`);
-                this.backgroundImageInstruction = instruction.split("/imagine")[1].trim();
-                this.imageInstructions.push(this.backgroundImageInstruction);
+        for (let instruction of possibleLongTermInstruction) {
+            if (instruction.startsWith("/")) {
+                const command = instruction.split(" ")[0];
+                console.log(`Process a possible command: ${command} (${instruction})`);
+                if (["/imagine", "/image", "/pic", "/picture", "/photo", "/i"].includes(command)) {
+                    console.log(`Background imagine command detected: ${instruction.split(command)[1].trim()}`);
+                    this.backgroundImageInstruction = instruction.split(command)[1].trim();
+                    this.imageInstructions.push(instruction.split(command)[1].trim());
+                } else if (["/enhance", "/impersonate", "/imp", "/e"].includes(command)) {
+                    // Need to get all non-[] text
+                    const targetContext = instruction.split(command)[1];
+                    const wholeMatch = `[[${command}${targetContext}]]`;
+                    const newHistory = newContent.split(wholeMatch)[0];
+                    console.log(`Enhance command detected: ${wholeMatch}`);
+                    const result = (await this.enhance(promptForId ?? Object.keys(this.characters)[0], anonymizedId, newHistory.trim(), targetContext.trim()))?.result ?? '';
+                    newContent = newContent.replace(wholeMatch, result);
+                }
             }
-        });
-        possibleLongTermInstruction = possibleLongTermInstruction.filter(instruction => !instruction.startsWith("/imagine"));
+        }
+
+        possibleLongTermInstruction = possibleLongTermInstruction.filter(instruction => !instruction.startsWith("/"));
 
         const longTermInstruction = possibleLongTermInstruction.join('\n').trim();
         if (possibleLongTermInstruction.length > 0) {
@@ -124,20 +149,38 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.longTermInstruction = longTermInstruction;
             this.longTermLife = possibleLongTermInstruction.length > 0 ? this.maxLife : 0;
         }
+
+        // Filter all [[]] from content:
         newContent = newContent.replace(longTermRegex, "").trim();
 
-        const currentRegex = /\[([^\]]*)\](?!\()/gm;
+
+        const currentRegex = /(?<!\[)\[([^\]|\[]*)\](?!\()/gm;
         let currentInstructions = [...newContent.matchAll(currentRegex)].map(match => match.slice(1)[0]);
+
+        // Handle commands:
+        for (let instruction of currentInstructions) {
+            if (instruction.startsWith("/")) {
+                const command = instruction.split(" ")[0];
+                console.log(`Process a possible command: ${command} (${instruction})`);
+                if (["/imagine", "/image", "/pic", "/picture", "/photo", "/i"].includes(command)) {
+                    console.log(`Imagine command detected: ${instruction.split(command)[1].trim()}`);
+                    this.imageInstructions.push(instruction.split(command)[1].trim());
+                } else if (["/enhance", "/impersonate", "/imp", "/e"].includes(command)) {
+                    // Need to get all non-[] text
+                    const targetContext = instruction.split(command)[1];
+                    const wholeMatch = `[${command}${targetContext}]`;
+                    const newHistory = newContent.split(wholeMatch)[0];
+                    console.log(`Enhance command detected: ${wholeMatch}`);
+                    const result = (await this.enhance(promptForId ?? Object.keys(this.characters)[0], anonymizedId, newHistory.trim(), targetContext.trim()))?.result ?? '';
+                    newContent = newContent.replace(wholeMatch, result);
+                }
+            }
+        }
+        // Filter all non-Markdown [] from newContent:
         newContent = newContent.replace(currentRegex, "").trim();
 
-        // Image flags:
-        currentInstructions.forEach(instruction => {
-            if (instruction.startsWith("/imagine")) {
-                console.log(`/imagine detected: ${instruction.split("/imagine")[1].trim()}`);
-                this.imageInstructions.push(instruction.split("/imagine")[1].trim());
-            }
-        });
-        currentInstructions = currentInstructions.filter(instruction => !instruction.startsWith("/imagine"));
+        // Remove commands:
+        currentInstructions = currentInstructions.filter(instruction => !instruction.startsWith("/"));
 
         const stageDirections = 
                 ((this.longTermInstruction.length > 0 && this.longTermLife > 0) ? `Ongoing Instruction: ${this.longTermInstruction}\n` : '') +
@@ -245,7 +288,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let cleanedText = text;
         matches.forEach((match, index) => {
             if (!validityChecks[index]) {
-            cleanedText = cleanedText.replace(match[0], match[1] != '!' ? match[2] : '');
+                cleanedText = cleanedText.replace(match[0], match[1] != '!' ? match[2] : '');
             }
         });
 
@@ -260,6 +303,25 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } catch {
             return false;
         }
+    }
+
+    enhance(charId: string, userId: string, newHistory: string, targetContext: string) {
+        return this.generator.textGen({
+            prompt:
+                `{{system_prompt}}\n\n` +
+                `About {{char}}: ${this.characters[charId].personality}\n${this.characters[charId].description}\n` +
+                `About {{user}}: ${this.users[userId].chatProfile}\n\n` +
+                `[Begin real interaction.]\n{{messages}}` +
+                `Instruction: At the System: prompt, seamlessly continue the narrative as {{user}}` +
+                targetContext.trim() != '' ?
+                    `, focusing on depicting and enhancing the following intent from {{user}}'s perspective: \"${targetContext}\".\n` :
+                    `, focusing on depicting {{user}}'s next dialog or actions from their perspective.\n` +
+                `Write as though building directly from {{user}}'s input below, taking care to maintain the narrative voice and style {{user}} employs while conveying the target intent with superior detail and suitable impact.\n` +
+                `{{user}}: ${newHistory}`,
+            min_tokens: 50,
+            max_tokens: 400,
+            include_history: true,
+        });
     }
 
     // Replace trigger words with less triggering words, so image gen isn't abetting.
