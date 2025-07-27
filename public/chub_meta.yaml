@@ -12,53 +12,54 @@ which are high-priority instructions that are not directly attributed to the use
 Simply search for and add this stage to your chat from Chat Settings and you'll be able to leverage multiple features within your input:
 
 <!-- 📄 Immediate Instruction -->
-<div style=\"background: linear-gradient(180deg, #550000, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
+<div style=\"background: linear-gradient(180deg, #330000, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
                              <strong>📄 [Immediate Instruction]</strong><br><br>
                              <code>[Single-Bracketed Immediate Instruction]</code> will apply the enclosed instruction to the following response (or its regens).
 </div>
   
   <!-- 📚 Long-Term Instruction -->
-<div style=\"background: linear-gradient(180deg, #442200, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-  <strong>📚 [[Long-Term Instruction]]</strong><br><br>
+<div style=\"background: linear-gradient(180deg, #221100, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
+  <p><strong>📚 [[Long-Term Instruction]]</strong></p>
   <p><code>[[Double-Bracketed Immediate Instruction]]</code> will apply the enclosed instruction for multiple responses or until new <code>[[long-term instruction]]</code> is provided.</p>
   <p>This instruction persists for ten consecutive responses by default, but this can be configured within the stage's settings.</p>
 </div>
   
   <!-- 🖼️ Imagine Context -->
-<div style=\"background: linear-gradient(180deg, #333300, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-  <strong>🖼️ [/Imagine Some Context]</strong><br><br>
-  <code>[/imagine Some additional context]</code> or <code>[/i Some additional context]</code> or simply <code>[/i]</code> will generate and insert an image into the response.<br><br>
-  Unlike Chub's built-in /imagine, this command queries the LLM to build an image description from chat context—including any supplemental details you provide in the brackets.<br><br>
-  <code>[[/imagine Some additional context]]</code> in double brackets will cause the resulting image to be used as a chat background, if backgrounds are not disabled at a profile-level.
+<div style=\"background: linear-gradient(180deg, #202000, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
+  <p><strong>🖼️ [/Imagine Some Context]</strong></p>
+  <p><code>[/imagine Some additional context]</code> or <code>[/i Some additional context]</code> or simply <code>[/i]</code> will generate and insert an image into the response.</p>
+  <p>Unlike Chub's built-in /imagine, this command queries the LLM to build an image description from chat context—including any supplemental details you provide in the brackets.</p>
+  <p><code>[[/imagine Some additional context]]</code> in double brackets will cause the resulting image to be used as a chat background, if backgrounds are not disabled at a profile-level.</p>
 </div>
-  
   <!-- 🎭 Enhance Context -->
-<div style=\"background: linear-gradient(180deg, #004422, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-  <strong>🎭 [/Enhance Some Action]</strong><br><br>
-  <code>[/enhance Some action]</code> or <code>[/impersonate Some action]</code> or simply <code>[/e]</code> will generate and insert impersonated prose into your input before the input is submitted to the LLM for a response.<br><br>
-  If you supply some action, the LLM should attempt to incorporate it. If you do not, it should attempt to act as it expects you might in the current situation.
+<div style=\"background: linear-gradient(180deg, #002211, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
+  <p><strong>🎭 [/Enhance Some Action]</strong></p>
+  <p><code>[/enhance Some action]</code> or <code>[/impersonate Some action]</code> or simply <code>[/e]</code> will generate and insert impersonated prose into your input before the input is submitted to the LLM for a response.</p>
+  <p>If you supply some action, the LLM should attempt to incorporate it. If you do not, it should attempt to act as it expects you might in the current situation.</p>
 </div>
-<br>
-<div style=\"background: linear-gradient(180deg, #002244, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-<p>There are multiple advantages to shifting these instructions into stage directions:</p>
-<ul>
-<li>They are more likely to be honored by the LLM.
-<li>They  are less likely to be mimicked by the LLM.
-<li>You'll maintain cleaner input in your narrative without manual editing.
-<li>Stage directions fall out of context rather than continue to occupy chat history.
-</ul>
-<p>This is an incredibly simple quality-of-life stage that you can drop into any chat. Let me know if you have any issues or suggestions. Thanks!</p>
+  <!-- 🔥 Advantages -->
+<div style=\"background: linear-gradient(180deg, #001122, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
+  <p><strong>🔥 Advantages</strong></p>
+  <p>There are multiple benefits to shifting these instructions into stage directions:</p>
+  <ul>
+    <li>They are more likely to be honored by the LLM.
+    <li>They  are less likely to be mimicked by the LLM.
+    <li>You'll maintain cleaner input in your narrative without manual editing.
+    <li>Stage directions fall out of context rather than continue to occupy chat history.
+  </ul>
+  <p>This is an incredibly simple quality-of-life stage that you can drop into any chat. Let me know if you have any issues or suggestions. Thanks!</p>
 </div>
-<div style=\"background: linear-gradient(180deg, #220044, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-<p>Updates:</p>
-2025.07.27 - Added an /impersonate command.<br>
-2025.07.26 - There have been some changes to the way that stages are applied to intros. 
-Overall, this is positive news, but the stage was deliberately removing Markdown image links from responses under the assumption that they would be hallucinatory—obviously, that's not true in an intro. 
-The stage now runs a HEAD request to validate image URLs found in responses, so that good links can be maintained while garbage gets removed.<br> 
-2025.06.10 - Added /imagine support.<br>
-2025.06.02 - Added some clearer logging and fixed a bug with using [[]] to clear long-term instructions.<br>
-2025.04.18 - Playing with allowing this to work in bot responses, but really with the intention of processing intros. It didn't really work because only the initial intro seems to go through the stage.<br>
-2025.04.05 - Added [[double brackets]] for long-term instruction.
+  <!-- 📈 Updates -->
+<div style=\"background: linear-gradient(180deg, #110022, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
+  <p><strong>📈 Updates</strong></p>
+  <p>2025.07.27 - Added an /impersonate command.<br>
+  2025.07.26 - There have been some changes to the way that stages are applied to intros. 
+  Overall, this is positive news, but the stage was deliberately removing Markdown image links from responses under the assumption that they would be hallucinatory—obviously, that's not true in an intro. 
+  The stage now runs a HEAD request to validate image URLs found in responses, so that good links can be maintained while garbage gets removed.<br> 
+  2025.06.10 - Added /imagine support.<br>
+  2025.06.02 - Added some clearer logging and fixed a bug with using [[]] to clear long-term instructions.<br>
+  2025.04.18 - Playing with allowing this to work in bot responses, but really with the intention of processing intros. It didn't really work because only the initial intro seems to go through the stage.<br>
+  2025.04.05 - Added [[double brackets]] for long-term instruction.<br></p>
 </div>
 "
 
