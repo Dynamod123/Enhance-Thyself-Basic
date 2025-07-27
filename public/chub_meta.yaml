@@ -30,12 +30,15 @@ Simply search for and add this stage to your chat from Chat Settings and you'll 
   <p><code>[/imagine Some additional context]</code> or <code>[/i Some additional context]</code> or simply <code>[/i]</code> will generate and insert an image into the response.</p>
   <p>Unlike Chub's built-in /imagine, this command queries the LLM to build an image description from chat context—including any supplemental details you provide in the brackets.</p>
   <p><code>[[/imagine Some additional context]]</code> in double brackets will cause the resulting image to be used as a chat background, if backgrounds are not disabled at a profile-level.</p>
+  <p><span style=\"color:red;\">Image generation utilizes daily credits if you do not have a Mars subscription (which has unlimited access to Chub's image generation.</span></p>
+  <p><span style=\"color:red;\">This feature makes additional LLM calls which rely on history inclusion. There is an outstanding Chub stages bug that can cause the supplied history to be incorrect, which may result in deficient results.</span></p>
 </div>
   <!-- 🎭 Enhance Context -->
 <div style=\"background: linear-gradient(180deg, #002211, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
   <p><strong>🎭 [/Enhance Some Action]</strong></p>
   <p><code>[/enhance Some action]</code> or <code>[/impersonate Some action]</code> or simply <code>[/e]</code> will generate and insert impersonated prose into your input before the input is submitted to the LLM for a response.</p>
   <p>If you supply some action, the LLM should attempt to incorporate it. If you do not, it should attempt to act as it expects you might in the current situation.</p>
+  <p><span style=\"color:red;\">This feature makes additional LLM calls which rely on history inclusion. There is an outstanding Chub stages bug that can cause the supplied history to be incorrect, which may result in deficient results.</span></p>
 </div>
   <!-- 🔥 Advantages -->
 <div style=\"background: linear-gradient(180deg, #001122, #1e1e1e); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
