@@ -29,13 +29,11 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         "Cinematic Vertical (9:21)": AspectRatio.CINEMATIC_VERTICAL
     }
     // Configurable:
-    maxLife: number = 10;
     artStyle: string = 'hyperrealistic illustration, dynamic angle, rich lighting';
     aspectRatio: AspectRatio = AspectRatio.WIDESCREEN_HORIZONTAL;
 
     // Per-message state:
     longTermInstruction: string = '';
-    longTermLife: number = 0;
     imageInstructions: string[] = [];
     backgroundImageInstruction: string = '';
     backgroundUrl: string = '';
@@ -55,7 +53,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.users = users;
 
         const {config, messageState} = data;
-        this.maxLife = config?.maxLife ?? this.maxLife;
         this.artStyle = config?.artStyle ?? this.artStyle;
         this.aspectRatio = (config && Object.keys(this.ASPECT_RATIO_MAPPING).includes(config.aspectRatio)) ? this.ASPECT_RATIO_MAPPING[config.aspectRatio] : this.aspectRatio;
 
@@ -80,7 +77,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     readMessageState(state: MessageStateType) {
         this.longTermInstruction = state?.longTermInstruction ?? '';
-        this.longTermLife = state?.longTermLife ?? 0;
         this.imageInstructions = state?.imageInstructions ?? [];
         this.backgroundImageInstruction = state?.backgroundImageInstruction ?? '';
         this.backgroundUrl = state?.backgroundUrl ?? '';
@@ -89,7 +85,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     writeMessageState() {
         return {
             longTermInstruction: this.longTermInstruction,
-            longTermLife: this.longTermLife,
             imageInstructions: this.imageInstructions,
             backgroundImageInstruction: this.backgroundImageInstruction,
             backgroundUrl: this.backgroundUrl
@@ -105,7 +100,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let isMain = userMessage.isMain;
 
 
-        this.longTermLife = Math.max(0, this.longTermLife - 1);
         this.imageInstructions = [];
 
         const longTermRegex = /\[\[([^\]]*)\]\](?!\()/gm;
@@ -137,19 +131,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         const longTermInstruction = possibleLongTermInstruction.join('\n').trim();
         if (possibleLongTermInstruction.length > 0) {
-            if (this.longTermLife > 0) {
-                if (longTermInstruction.length > 0) {
-                    console.log(`Replacing long-term instruction:\n${this.longTermInstruction}\nWith:\n${longTermInstruction}`);
-                } else {
-                    console.log(`Clearing long-term instruction.`);
-                }
-            } else if (longTermInstruction.length > 0) {
+            if (longTermInstruction.length > 0) {
                 console.log(`Setting long-term instruction:\n${longTermInstruction}`);
             } else {
-                console.log(`No current long-term instruction to clear.`);
+                console.log(`Clearing long-term instruction.`);
             }
             this.longTermInstruction = longTermInstruction;
-            this.longTermLife = possibleLongTermInstruction.length > 0 ? this.maxLife : 0;
         }
 
         // Filter all [[]] from content:
@@ -185,7 +172,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         currentInstructions = currentInstructions.filter(instruction => !instruction.startsWith("/"));
 
         const stageDirections = 
-                ((this.longTermInstruction.length > 0 && this.longTermLife > 0) ? `Ongoing Instruction: ${this.longTermInstruction}\n` : '') +
+                ((this.longTermInstruction.length > 0) ? `Ongoing Instruction: ${this.longTermInstruction}\n` : '') +
                 (currentInstructions.length > 0 ? `Critical Instruction: ${currentInstructions.join('\n').trim()}\n` : '');
 
         // Preserve empty responses that only had instruction.
@@ -210,20 +197,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
 
         const newContent = await this.filterValidMarkdown(botMessage.content);
-
-        /*
-        const longTermRegex = /\[\[([^\]]+)\]\](?!\()/gm;
-        const possibleLongTermInstruction = [...newContent.matchAll(longTermRegex)].map(match => match.slice(1)).join('\n').trim();
-        if (possibleLongTermInstruction.length > 0) {
-            if (this.longTermLife > 0) {
-                console.log(`Response is replacing long-term instruction:\n${this.longTermInstruction}\nWith:\n${possibleLongTermInstruction}`);
-            } else {
-                console.log(`Response is setting long-term instruction:\n${possibleLongTermInstruction}`);
-            }
-            this.longTermInstruction = possibleLongTermInstruction;
-            this.longTermLife = this.maxLife;
-            newContent = newContent.replace(longTermRegex, "").trim();
-        }*/
 
         let imageUrls = [];
         for (let instruction of this.imageInstructions) {

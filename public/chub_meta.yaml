@@ -25,9 +25,8 @@ which are high-priority instructions that are not directly attributed to the use
     <!-- ⏱️ Long-Term Instruction -->
   <div style=\"background: linear-gradient(180deg, #221100, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
     <p style=\"margin-bottom: 8px;\"><strong>⏱️ [[Long-Term Instruction]]</strong></p>
-    <p><code>[[Double-Bracketed Long-Term Instruction]]</code> will apply the enclosed instruction for multiple responses or until new <code>[[long-term instruction]]</code> is provided.</p>
-    <p>Use long-term instruction to give the LLM guidance for a developing situation or an ongoing suggestion for response style.</p>
-    <p>This instruction persists for ten consecutive responses by default, but this can be configured within the stage's settings.</p>
+    <p><code>[[Double-Bracketed Long-Term Instruction]]</code> will apply the enclosed instruction until new <code>[[long-term instruction]]</code> is provided.</p>
+    <p>Stop repeating yourself and use long-term instruction to give the LLM guidance for a developing situation or an ongoing suggestion for response style.</p>
   </div>
   
     <!-- 📷 Imagine Context -->
@@ -36,7 +35,7 @@ which are high-priority instructions that are not directly attributed to the use
     <p><code>[/imagine Some optional context]</code> or <code>[/i Some optional context]</code> or simply <code>[/i]</code> will generate and insert an image into the response.</p>
     <p>Unlike Chub's built-in /imagine, this command queries the LLM to build an image description from chat context—including any supplemental details you provide in the brackets.</p>
     <p><code>[[/imagine Some additional context]]</code> in double brackets will cause the resulting image to be used as a chat background, if backgrounds are not disabled at a profile-level.</p>
-    <p><span style=\"color:red;\">Image generation utilizes daily credits, if you do not have a Mars subscription. A Mars subscription includes unlimited access to Chub's image model.</span></p>
+    <p><span style=\"color:red;\">If you do not have a Mars subscription, image generation will consume daily credits. A Mars subscription includes unlimited access to Chub's image model.</span></p>
   </div>
 
     <!-- 🎭 Enhance Context -->
@@ -63,7 +62,8 @@ which are high-priority instructions that are not directly attributed to the use
 <div style=\"background: linear-gradient(180deg, #110022, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
   <p style=\"margin-bottom: 8px;\"><strong>🛠️ Updates</strong></p>
   <p>As always, let me know if you have any issues or suggestions. Thanks!</p>
-  <p>2025.08.12 - Minor prompt changes and stage version updates. The textgen bug that impacted history inclusion has been fixed, so [/imagine] and [/impersonate] should be more consistent.<br>
+  <p>2025.09.16 - Removed the long-term instruction lifespan. It now always persists until new [[long-term instruction]] is provided or cleared with empty [[]].<br>
+  2025.08.12 - Minor prompt changes and stage version updates. The textgen bug that impacted history inclusion has been fixed, so [/imagine] and [/impersonate] should be more consistent.<br>
   2025.07.27 - Added an /impersonate command.<br>
   2025.07.26 - There have been some changes to the way that stages are applied to intros. 
   Overall, this is positive news, but the stage was deliberately removing Markdown image links from responses under the assumption that they would be hallucinatory—obviously, that's not true in an intro. 
@@ -102,11 +102,6 @@ tags:
 config_schema:
   type: object
   properties:
-    longTermLife:
-      title: "Long-Term Instruction Duration"
-      description: "The number of subsequent responses that long-term instructions will persist."
-      type: integer
-      default: 10
     artStyle:
       title: "Art Descriptors"
       description: "This content will be provided to image generation to describe the style of the images for this chat."
