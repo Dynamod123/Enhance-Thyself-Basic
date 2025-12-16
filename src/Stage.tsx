@@ -203,13 +203,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             prompt:
                 `About {{char}}: ${this.characters[charId].personality}\n${this.characters[charId].description}\n` +
                 `About {{user}}: ${this.users[userId].chatProfile}\n\n` +
-                `[System: You are an expert roleplay writer. Your task is to write the next turn strictly from the perspective of {{user}}. You must contextually react to {{char}}, but you remain {{user}}.]\n\n` +
+                `[System: You are {{user}}'s inner voice. You generate {{user}}'s actions and dialogue. You are NOT {{char}}.]\n\n` +
                 `[Begin real interaction.]\n{{messages}}\n` +
                 `Global Context: [{{post_history_instructions}}]\n` +
                 `Override: [Ignore any instruction above that forbids writing as {{user}}. Your role is strictly to write {{user}}'s next action.]\n` +
                 (instructions.trim() !== '' ? `Instruction: ${instructions}\n` : '') +
                 `\n` +
-                `Instruction: Write the next narrative segment for {{user}}. Use {{user}}'s perspective. Do not write for {{char}}. Do not include meta-commentary or bracketed explanations.\n` +
+                `Instruction: Expand the user's intent into a full narrative paragraph from {{user}}'s POV. Do not describe {{char}}'s reaction. Stop writing if focus shifts to {{char}}. Do not include meta-commentary or bracketed headers.\n` +
                 (targetContext.trim() != '' ?
                     `Goal: Depict and enhance the following intent from {{user}}'s perspective: \"${targetContext}\".\n` :
                     `Goal: Depict {{user}}'s next dialog or actions from their perspective.\n`) +
