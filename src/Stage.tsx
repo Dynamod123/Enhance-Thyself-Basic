@@ -201,9 +201,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     enhance(charId: string, userId: string, newHistory: string, targetContext: string, instructions: string = '') {
         return this.generator.textGen({
             prompt:
-                `[System: You are an expert roleplay writer. Your task is to write the next turn strictly from the perspective of {{user}}. You must contextually react to {{char}}, but you remain {{user}}.]\n\n` +
                 `About {{char}}: ${this.characters[charId].personality}\n${this.characters[charId].description}\n` +
                 `About {{user}}: ${this.users[userId].chatProfile}\n\n` +
+                `[System: You are an expert roleplay writer. Your task is to write the next turn strictly from the perspective of {{user}}. You must contextually react to {{char}}, but you remain {{user}}.]\n\n` +
                 `[Begin real interaction.]\n{{messages}}\n` +
                 `General Instruction: [{{post_history_instructions}}]\n` +
                 (instructions.trim() !== '' ? `${instructions}\n` : '') +
