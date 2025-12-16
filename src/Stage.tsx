@@ -109,15 +109,32 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         // Now, auto-enhance existing content if possible.
         if (newContent.length > 0) {
             console.log(`Auto-Enhance triggered for: ${newContent}`);
-            // We treat the "newContent" (actual user input) as the target context for the enhancement.
-            // We essentially impersonate the user saying/doing this thing.
-            // We pass 'stageDirections' to ensure the enhancer respects them (e.g. [shout] Hello -> HELLO).
-            const result = (await this.enhance(promptForId ?? Object.keys(this.characters)[0], anonymizedId, '', newContent.trim(), stageDirections))?.result ?? '';
 
-            // If result is valid, use it. Otherwise fallback to original? 
-            // Usually generator returns string. If empty, maybe keep original.
-            if (result.length > 0) {
-                newContent = result;
+            try {
+                // Create a promise that rejects after 10 seconds
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Enhance request timed out')), 10000)
+                );
+
+                // Use a valid character ID or fallback
+                const characterId = promptForId ?? Object.keys(this.characters)[0];
+                if (!characterId) {
+                    throw new Error('No characters found for enhancement.');
+                }
+
+                // Race the enhance call against the timeout
+                const enhancePromise = this.enhance(characterId, anonymizedId, '', newContent.trim(), stageDirections);
+
+                const result: any = await Promise.race([enhancePromise, timeoutPromise]);
+                const textResult = result?.result ?? '';
+
+                if (textResult.length > 0) {
+                    newContent = textResult;
+                    console.log(`Enhancement successful.`);
+                }
+            } catch (error) {
+                console.error(`Auto-Enhance failed or timed out:`, error);
+                // Fallback to original content on error/timeout
             }
         }
 
