@@ -2,77 +2,14 @@
 #   in which case these values can be managed in the UI.
 
 # The name of the stage.
-project_name: "Boss Mode"
+project_name: "Enhance Thyself!"
 
 # A short tagline to show in search.
-tagline: "Take control with [Boss Mode]."
+tagline: "Imagine context-rich Impersonation prose automatically inserted without commands."
 
 creator_notes: "
-<!-- 💼 Boss Mode Features -->
-<div style=\"background: linear-gradient(180deg, #220011, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-  <p style=\"margin-bottom: 8px;\"><strong>💼 Boss Mode Features</strong></p>
-  <p>Want to tell the LLM how to do its job? This stage takes your [bracketed instructions] or [[double-bracketed instructions]] and turns them into \"stage directions,\" 
-which are high-priority instructions that are not directly attributed to the user's input.</p>
-<p>Simply search for and add this stage to any chat from Chat Settings and you'll be able to leverage multiple features within your input:</p>
-
-  <!-- 🔥 Immediate Instruction -->
-  <div style=\"background: linear-gradient(180deg, #330000, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-    <p style=\"margin-bottom: 8px;\"><strong>🔥 [Immediate Instruction]</strong></p>
-    <p><code>[Single-Bracketed Immediate Instruction]</code> will apply the enclosed instruction to the following response (or its regens).</p>
-    <p>Use immediate instruction to tell the LLM how to respond to your input or to request a one-off behavior.</p>
-  </div>
-
-    <!-- ⏱️ Long-Term Instruction -->
-  <div style=\"background: linear-gradient(180deg, #221100, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-    <p style=\"margin-bottom: 8px;\"><strong>⏱️ [[Long-Term Instruction]]</strong></p>
-    <p><code>[[Double-Bracketed Long-Term Instruction]]</code> will apply the enclosed instruction until new <code>[[long-term instruction]]</code> is provided.</p>
-    <p>Stop repeating yourself and use long-term instruction to give the LLM guidance for a developing situation or an ongoing suggestion for response style.</p>
-  </div>
-  
-    <!-- 📷 Imagine Context -->
-  <div style=\"background: linear-gradient(180deg, #202000, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-    <p style=\"margin-bottom: 8px;\"><strong>📷 [/Imagine Some Optional Context]</strong></p>
-    <p><code>[/imagine Some optional context]</code> or <code>[/i Some optional context]</code> or simply <code>[/i]</code> will generate and insert an image into the response.</p>
-    <p>Unlike Chub's built-in /imagine, this command queries the LLM to build an image description from chat context—including any supplemental details you provide in the brackets.</p>
-    <p><code>[[/imagine Some additional context]]</code> in double brackets will cause the resulting image to be used as a chat background, if backgrounds are not disabled at a profile-level.</p>
-    <p><span style=\"color:red;\">If you do not have a Mars subscription, image generation will consume daily credits. A Mars subscription includes unlimited access to Chub's image model.</span></p>
-  </div>
-
-    <!-- 🎭 Enhance Context -->
-  <div style=\"background: linear-gradient(180deg, #002211, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-    <p style=\"margin-bottom: 8px;\"><strong>🎭 [/Enhance Some Optional Action]</strong></p>
-    <p><code>[/enhance Some action]</code> or <code>[/impersonate Some action]</code> or simply <code>[/e]</code> will generate and insert impersonated prose into your input before the input is submitted to the LLM for a response.</p>
-    <p>If you supply some action, the LLM should attempt to incorporate it. If you do not, it should attempt to act as it expects you might in the current situation.</p>
-  </div>
-</div>
-
-  <!-- 🧠 Advantages -->
-<div style=\"background: linear-gradient(180deg, #001122, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-  <p style=\"margin-bottom: 8px;\"><strong>🧠 Advantages</strong></p>
-  <p>There are multiple benefits to shifting these instructions into stage directions:</p>
-  <ul>
-    <li>They are more likely to be honored by the LLM.
-    <li>They  are less likely to be mimicked by the LLM.
-    <li>You'll maintain cleaner input in your narrative without manual editing.
-    <li>Stage directions fall out of context rather than continue to occupy chat history.
-  </ul>
-</div>
-
-  <!-- 🛠️ Updates -->
-<div style=\"background: linear-gradient(180deg, #110022, #111111); box-shadow: 0 0 8px rgba(255, 255, 255, 0.05); color: #f1f1f1; border: 1px solid #555; border-radius: 6px; padding: 10px; margin-bottom: 12px;\">
-  <p style=\"margin-bottom: 8px;\"><strong>🛠️ Updates</strong></p>
-  <p>As always, let me know if you have any issues or suggestions. Thanks!</p>
-  <p>2025.09.16 - Removed the long-term instruction lifespan. It now always persists until new [[long-term instruction]] is provided or cleared with empty [[]].<br>
-  2025.08.12 - Minor prompt changes and stage version updates. The textgen bug that impacted history inclusion has been fixed, so [/imagine] and [/impersonate] should be more consistent.<br>
-  2025.07.27 - Added an /impersonate command.<br>
-  2025.07.26 - There have been some changes to the way that stages are applied to intros. 
-  Overall, this is positive news, but the stage was deliberately removing Markdown image links from responses under the assumption that they would be hallucinatory—obviously, that's not true in an intro. 
-  The stage now runs a HEAD request to validate image URLs found in responses, so that good links can be maintained while garbage gets removed.<br> 
-  2025.06.10 - Added /imagine support.<br>
-  2025.06.02 - Added some clearer logging and fixed a bug with using [[]] to clear long-term instructions.<br>
-  2025.04.18 - Playing with allowing this to work in bot responses, but really with the intention of processing intros. It didn't really work because only the initial intro seems to go through the stage.<br>
-  2025.04.05 - Added [[double brackets]] for long-term instruction.<br></p>
-</div>
+This stage has the primary goal of altering your messages you send out by enhancing them with context from the story, making the message richer and deeper than initially presented. It takes away a little bit of your fine-tuned control over the direction of the story, but in return you are going to be able to sit back and give brief descriptions of your actions and enjoy them blossom into fully realized prose. If you're feeling lazy, or desiring an extra kick of creativity in your stories, or just want your model to punch up your texts… this stage is for you!
+This Stage is Based on JakeH's 'Boss Mode' Stage. Check out the original mod here: https://chub.ai/extensions/JakeH/boss-mode-cfb0b7d36b1e
 "
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
@@ -99,20 +36,7 @@ tags:
 # The schema of any user-supplied config.
 # If your stage requires a configuration but has no
 #   defined schema, it won't work.
-config_schema:
-  type: object
-  properties:
-    artStyle:
-      title: "Art Descriptors"
-      description: "This content will be provided to image generation to describe the style of the images for this chat."
-      type: string
-      default: "hyperrealistic illustration, dynamic angle, rich lighting"
-    aspectRatio:
-      title: "Aspect Ratio"
-      description: "The desired aspect ratio for the generated image."
-      type: string
-      default: "Widescreen Horizontal (16:9)"
-      enum: ["Cinematic Horizontal (21:9)", "Widescreen Horizontal (16:9)", "Photo Horizontal (3:2)", "Post Horizontal (5:4)", "Square (1:1)", "Post Vertical (4:5)", "Photo Vertical (2:3)", "Widescreen Vertical (9:16)", "Cinematic Vertical (9:21)"]
+# The schema of the state that you store.
         
 
 
