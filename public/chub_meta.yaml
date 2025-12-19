@@ -12,6 +12,11 @@ This stage has the primary goal of altering your messages you send out by enhanc
 This Stage is Based on JakeH's 'Boss Mode' Stage. Check out the original mod here: https://chub.ai/extensions/JakeH/boss-mode-cfb0b7d36b1e
 "
 
+config_schema:
+  type: object
+  properties: {}
+
+
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
 visibility: 'PUBLIC'
 
@@ -52,5 +57,5 @@ tags:
 github_path: 'https://github.com/Dynamod123/Enhance_Thyself'
 
 
-extension_id: 'boss-mode-cfb0b7d36b1e'
+extension_id: 
 
