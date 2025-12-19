@@ -9,13 +9,11 @@ tagline: "Imagine context-rich Impersonation prose automatically inserted withou
 
 creator_notes: "
 This stage has the primary goal of altering your messages you send out by enhancing them with context from the story, making the message richer and deeper than initially presented. It takes away a little bit of your fine-tuned control over the direction of the story, but in return you are going to be able to sit back and give brief descriptions of your actions and enjoy them blossom into fully realized prose. If you're feeling lazy, or desiring an extra kick of creativity in your stories, or just want your model to punch up your texts… this stage is for you!
-
-This Stage is Based on JakeH's 'Boss Mode' Stage. Check out the original mod here:
-https://chub.ai/extensions/JakeH/boss-mode-cfb0b7d36b1e
+This Stage is Based on JakeH's 'Boss Mode' Stage. Check out the original mod here: https://chub.ai/extensions/JakeH/boss-mode-cfb0b7d36b1e
 "
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
-visibility: 'PRIVATE'
+visibility: 'PUBLIC'
 
 # 'ADJACENT' | 'NONE' | 'COVER' | 'FULLSCREEN'
 # 'ADJACENT' is default. The frame will display on the side of the
@@ -34,26 +32,6 @@ tags:
  - 'Utility'
  - 'Quality of Life'
  - 'SFW'
-
-# The schema of any user-supplied config.
-# If your stage requires a configuration but has no
-#   defined schema, it won't work.
-config_schema:
-  type: object
-  properties:
-    artStyle:
-      title: "Art Descriptors"
-      description: "This content will be provided to image generation to describe the style of the images for this chat."
-      type: string
-      default: "hyperrealistic illustration, dynamic angle, rich lighting"
-    aspectRatio:
-      title: "Aspect Ratio"
-      description: "The desired aspect ratio for the generated image."
-      type: string
-      default: "Widescreen Horizontal (16:9)"
-      enum: ["Cinematic Horizontal (21:9)", "Widescreen Horizontal (16:9)", "Photo Horizontal (3:2)", "Post Horizontal (5:4)", "Square (1:1)", "Post Vertical (4:5)", "Photo Vertical (2:3)", "Widescreen Vertical (9:16)", "Cinematic Vertical (9:21)"]
-        
-
 
 # The schema of the state that you store.
 # This isn't needed even if you do store state,
