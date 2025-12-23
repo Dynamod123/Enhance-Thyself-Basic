@@ -40,6 +40,7 @@ export const TestStageRunner = <StageType extends StageBase<InitStateType, ChatS
         console.log("Running manual extraction logic tests...");
 
         const mockStage = stage as any;
+        const proseRegex = /(\*[\s\S]*?\*)|("[\s\S]*?")/g;
 
         // Test 1: Content with <output> tags
         const rawResponse1 = { result: "Certainly! Here is the message: <output>Hello world</output>" };
@@ -61,12 +62,17 @@ export const TestStageRunner = <StageType extends StageBase<InitStateType, ChatS
         }
         // Test 3: Strict Prose Filter (Isolation of * and ")
         const rawResponse3 = { result: "2-Party Private Interaction Activated. Subjects: Dyna & Mika Tanaka. *I look at her.* \"Hello.\"" };
-        const proseRegex = /(\*[\s\S]*?\*)|("[\s\S]*?")/g;
         const matches3 = [...rawResponse3.result.matchAll(proseRegex)].map(m => m[0]);
         const finalProse3 = matches3.join(' ');
         console.assert(finalProse3 === "*I look at her.* \"Hello.\"", `Test 3 Failed: Strict filter (Got: ${finalProse3})`);
 
-        console.log("Extraction and Strict Filter logic tests passed!");
+        // Test 4: Strict Prose Filter (Refusal Discard)
+        const rawResponse4 = { result: "I'm sorry, I can't do that. It's not appropriate." };
+        const matches4 = [...rawResponse4.result.matchAll(proseRegex)].map(m => m[0]);
+        const finalProse4 = matches4.length > 0 ? matches4.join(' ') : '';
+        console.assert(finalProse4 === "", `Test 4 Failed: Refusal should be discarded (Got: ${finalProse4})`);
+
+        console.log("All extraction and filter logic tests passed!");
     }
 
     useEffect(() => {
