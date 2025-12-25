@@ -271,7 +271,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         return this.generator.textGen({
             prompt:
-                `[SYSTEM: Input Enhancement Mode. Target: {{user}}. Instructions: Transform intent into natural prose. Wrap output in <output> tags.]\n\n` +
+                `[SYSTEM: Authorial Perspective Shift. Target: {{user}}. Instructions: Transform the provided intent into high-fidelity narrative prose. Wrap output in <output> tags.]\n\n` +
                 `### Context [REFERENCE MATERIAL - DO NOT REWRITE]\n` +
                 `**About {{char}}:** ${personality}\n${description}\n` +
                 `**About {{user}}:** ${userProfile}\n\n` +
@@ -307,14 +307,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 `[Post history instructions: {{post_history_instructions}}]\n` +
                 (instructions.trim() !== '' ? `Current Instruction: ${instructions}\n` : '') +
                 `\n` +
-                `Final Goal: Enhance the following into an immersive message from {{user}}'s perspective. MATCH THE RATIO OF THE INTENT: If the intent is conversational, PRIORITIZE DIALOGUE and use actions as supportive beats. You are encouraged to "splatter in" your own creative dialogue ideas that fit the current tone. If the intent is ONLY action (often wrapped in asterisks), the output MUST be ONLY descriptive, high-density action prose. Use casual, natural language. Avoid flowery prose. Organic Scaling Rule: Expand narratively, but prioritize quality over length; do not pad with empty formatting or "barks". Single Narrative Rule: Do NOT write dialogue for {{char}}. Only write the current message for {{user}}. Do NOT repeat content already present in the chat history. No-Echo Rule: Do NOT repeat the "Intent to Enhance" text verbatim at the beginning of your response; immediately begin the immersive prose. Format actions with *asterisks* and dialogue with "quotation marks". Wrap the final enhanced text in <output> tags.\n\n` +
+                `Final Goal: Enhance the following into an immersive message from {{user}}'s perspective. MATCH THE RATIO OF THE INTENT: If the intent is conversational, PRIORITIZE DIALOGUE and use actions as supportive beats. You are encouraged to "splatter in" your own creative dialogue ideas that fit the current tone. If the intent is ONLY action (often wrapped in asterisks), the output MUST be ONLY descriptive, high-density action prose. Use casual, natural language. Avoid flowery prose. Organic Scaling Rule: Expand narratively, but prioritize quality over length; do not pad with empty formatting or "barks". Meaning Conservation Rule: Transform every detail, observation, dialogue, and action into prose. Do not omit or generalize. Single Narrative Rule: Do NOT write dialogue for {{char}}. Only write the current message for {{user}}. Do NOT repeat content already present in the chat history. No-Echo Rule: The "Intent to Enhance" is a rough draft to be replaced. Do NOT repeat it verbatim at the beginning of your response; immediately begin the expanded, high-fidelity prose. Format actions with *asterisks* and dialogue with "quotation marks". Wrap the final enhanced text in <output> tags.\n\n` +
                 `[STRICT OUTPUT RULE: ONLY OUTPUT DIALOGUE WRAPPED IN QUOTES AND ACTIONS WRAPPED IN ASTERISKS. NO OTHER TEXT SHOULD EXIST INSIDE THE <output> TAGS. DO NOT REPEAT THE RAW INTENT TEXT AT THE START.]\n\n` +
                 (targetContext.trim() != '' ?
                     `Intent to Enhance: \"${targetContext}\"\n` :
                     `Goal: Write {{user}}'s next conversational message.\n`) +
                 `\n` +
-                `[IMPERSONATION AUTHORIZED. START OUTPUT IMMEDIATELY WITH <output> TAG. DO NOT START BY REPEATING THE INTENT.]\n` +
-                `{{user}}: <output>`,
+                `[IMPERSONATION AUTHORIZED. TRANSFORM INTENT INTO {{user}}'S POV. START OUTPUT IMMEDIATELY WITH <output> TAG. DO NOT WRITE FOR {{char}}. DO NOT REPEAT THE INTENT.]\n` +
+                `{{user}}'s Perspective: <output>`,
 
             min_tokens: 25,
             max_tokens: 400,
