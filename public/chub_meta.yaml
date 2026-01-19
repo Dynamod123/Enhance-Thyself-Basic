@@ -2,13 +2,17 @@
 #   in which case these values can be managed in the UI.
 
 # The name of the stage.
-project_name: "Enhance Thyself!"
+# The name of the stage.
+project_name: "Enhance Thyself Basic"
 
 # A short tagline to show in search.
-tagline: "Imagine context-rich Impersonation prose automatically inserted without commands."
+tagline: "Context-rich Impersonation prose. No asterisks."
 
 creator_notes: "
-This stage has the primary goal of altering your messages you send out by enhancing them with context from the story, making the message richer and deeper than initially presented. It takes away a little bit of your fine-tuned control over the direction of the story, but in return you are going to be able to sit back and give brief descriptions of your actions and enjoy them blossom into fully realized prose. If you're feeling lazy, or desiring an extra kick of creativity in your stories, or just want your model to punch up your texts… this stage is for you!
+This stage has the primary goal of altering your messages you send out by enhancing them with context from the story, making the message richer and deeper than initially presented. It takes away a little bit of your fine-tuned control over the direction of the story, but in return you are going to be able to sit back and give brief descriptions of your actions and enjoy them blossom into fully realized prose.
+
+This is the BASIC version. It forbids the use of asterisks in the output.
+
 This Stage is Based on JakeH's 'Boss Mode' Stage. Check out the original mod here: https://chub.ai/extensions/JakeH/boss-mode-cfb0b7d36b1e
 "
 
@@ -51,11 +55,4 @@ tags:
 # extension_id is automatically generated on push with a new project;
 #    you should not make or set this value.
 # github_path will be added if it does not exist. It is the URL of the repo.
-
-
-
-github_path: 'https://github.com/Dynamod123/Enhance_Thyself'
-
-
-extension_id: 'enhance-thyself-b35058cc40c0'
 
