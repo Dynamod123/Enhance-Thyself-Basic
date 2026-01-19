@@ -282,9 +282,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     enhance(charId: string, userId: string, newHistory: string, targetContext: string, instructions: string = '') {
         // Sanitize inputs to prevent template parsing errors if they contain '{{'
-        const personality = (this.characters[charId]?.personality ?? '').replace(/{{/g, '\\{{');
-        const description = (this.characters[charId]?.description ?? '').replace(/{{/g, '\\{{');
-        const userProfile = (this.users[userId]?.chatProfile ?? '').replace(/{{/g, '\\{{');
+        // We break the braces apart because standard escaping (\\{{) might not be supported by the engine.
+        const personality = (this.characters[charId]?.personality ?? '').replace(/{{/g, '{ {').replace(/}}/g, '} }');
+        const description = (this.characters[charId]?.description ?? '').replace(/{{/g, '{ {').replace(/}}/g, '} }');
+        const userProfile = (this.users[userId]?.chatProfile ?? '').replace(/{{/g, '{ {').replace(/}}/g, '} }');
 
         return this.generator.textGen({
             prompt:
