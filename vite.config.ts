@@ -4,12 +4,43 @@ import dts from 'vite-plugin-dts'
 import { resolve } from 'path'
 
 export default defineConfig(({ command, mode }) => {
-    if (mode != 'lib') {
+    if (mode === 'lib-no-asterisks') {
+        return {
+            plugins: [
+                react(),
+                dts({
+                    outDir: ['dist'],
+                    include: ['src/**/*.ts*'],
+                    staticImport: true,
+                    rollupTypes: true,
+                    insertTypesEntry: true,
+                }),
+            ],
+            build: {
+                lib: {
+                    entry: resolve(__dirname, 'src/indexNoAsterisks.ts'),
+                    name: 'index',
+                    formats: ['umd', 'es', 'cjs', 'iife'],
+                    fileName: 'index-no-asterisks',
+                },
+                rollupOptions: {
+                    external: ['react', 'react-dom'],
+                    output: {
+                        globals: {
+                            react: 'React',
+                            'react-dom': 'ReactDOM',
+                        },
+                    },
+                }
+            }
+        }
+    } else if (mode != 'lib') {
         return {
             plugins: [react()]
         }
     } else {
-        return { plugins: [
+        return {
+            plugins: [
                 react(),
                 dts({
                     outDir: ['dist'],
